@@ -30,14 +30,14 @@ function version() {
   return int32ToBytes(1);
 }
 
-export const valtype = {
-  i32: 0x7f,
-  i64: 0x7e,
-  f32: 0x7d,
-  f64: 0x7c,
-};
+enum valtype {
+  i32 = 0x7f,
+  i64 = 0x7e,
+  f32 = 0x7d,
+  f64 = 0x7c,
+}
 
-function vec(elements) {
+function vec<T>(elements: T[]) {
   return [u32(elements.length), ...elements];
 }
 
@@ -46,7 +46,7 @@ function section(id, contents) {
   return [id, u32(sizeInBytes), contents];
 }
 
-function functype(paramTypes, resultTypes) {
+function functype(paramTypes: valtype[], resultTypes: valtype[]) {
   return [TYPE_FUNCTION, vec(paramTypes), vec(resultTypes)];
 }
 
@@ -88,7 +88,7 @@ function exportsec(exports) {
 const funcidx = u32;
 
 const exportdesc = {
-  func(idx) {
+  func(idx: number) {
     return [0x00, funcidx(idx)];
   },
 };
@@ -97,13 +97,22 @@ function module(sections) {
   return [magic(), version(), sections];
 }
 
-const numtype = {
-  i32: 0x7f,
-};
+enum numtype {
+  i32 = 0x7f,
+}
 
 const instr = {
   nop: 0x01,
   end: 0x0b,
+
+  i32: {
+    const: 0x41,
+    add: 0x6a,
+    sub: 0x6b,
+  },
+  i64: {
+    const: 0x42,
+  },
 };
 
 const SEVEN_BIT_MASK_BIG_INT = 0b01111111n;
@@ -124,7 +133,6 @@ function u32(v) {
       r.push(b);
     }
   }
-
   return r;
 }
 
@@ -150,3 +158,29 @@ function i32(v) {
 
   return r;
 }
+
+function locals(n: number, type: valtype) {
+  return [u32(n), type];
+}
+
+export {
+  code,
+  codesec,
+  export_,
+  exportdesc,
+  exportsec,
+  func,
+  funcidx,
+  funcsec,
+  functype,
+  i32,
+  instr,
+  locals,
+  module,
+  name,
+  section,
+  typeidx,
+  typesec,
+  valtype,
+  vec,
+};

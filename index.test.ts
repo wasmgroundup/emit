@@ -1,0 +1,42 @@
+import { expect, test } from "bun:test";
+
+import {
+  module,
+  typesec,
+  functype,
+  valtype,
+  funcsec,
+  typeidx,
+  exportsec,
+  export_,
+  exportdesc,
+  codesec,
+  code,
+  func,
+  locals,
+  instr,
+} from "./index";
+
+test("simple modules", async () => {
+  const makeModule = (paramTypes, resultTypes, body) => {
+    const mod = module([
+      typesec([functype(paramTypes, resultTypes)]),
+      funcsec([typeidx(0)]),
+      exportsec([export_("main", exportdesc.func(0))]),
+      codesec([code(func([], body))]),
+    ]);
+    return Uint8Array.from(mod.flat(Infinity));
+  };
+  const runMain = async (bytes, args) => {
+    const { instance } = await WebAssembly.instantiate(bytes);
+    return instance.exports.main(...args);
+  };
+
+  expect(await runMain(makeModule([], [], [instr.end]), [])).toBe(undefined);
+  expect(
+    await runMain(
+      makeModule([], [valtype.i32], [instr.i32.const, 1, instr.end]),
+      [],
+    ),
+  ).toBe(1);
+});
