@@ -5,12 +5,12 @@ const SECTION_ID_CODE = 10;
 
 const TYPE_FUNCTION = 0x60;
 
-function stringToBytes(s) {
+function stringToBytes(s: string): number[] {
   const bytes = new TextEncoder().encode(s);
   return Array.from(bytes);
 }
 
-function int32ToBytes(v) {
+function int32ToBytes(v: number): number[] {
   // prettier-ignore
   return [
     v & 0xff,
@@ -20,12 +20,12 @@ function int32ToBytes(v) {
   ];
 }
 
-function magic() {
+function magic(): number[] {
   // [0x00, 0x61, 0x73, 0x6d]
   return stringToBytes("\0asm");
 }
 
-function version() {
+function version(): number[] {
   // [0x01, 0x00, 0x00, 0x00]
   return int32ToBytes(1);
 }
@@ -41,7 +41,7 @@ function vec<T>(elements: T[]) {
   return [u32(elements.length), ...elements];
 }
 
-function section(id, contents) {
+function section(id: number, contents) {
   const sizeInBytes = contents.flat(Infinity).length;
   return [id, u32(sizeInBytes), contents];
 }
@@ -73,11 +73,11 @@ function codesec(codes) {
   return section(SECTION_ID_CODE, vec(codes));
 }
 
-function name(s) {
+function name(s: string) {
   return vec(stringToBytes(s));
 }
 
-function export_(nm, exportdesc) {
+function export_(nm: string, exportdesc) {
   return [name(nm), exportdesc];
 }
 
@@ -118,7 +118,7 @@ const instr = {
 const SEVEN_BIT_MASK_BIG_INT = 0b01111111n;
 const CONTINUATION_BIT = 0b10000000;
 
-function u32(v) {
+function u32(v: number | bigint) {
   let val = BigInt(v);
   let more = true;
   const r = [];
@@ -137,7 +137,7 @@ function u32(v) {
 }
 
 ///! START i32-v1 #priv #api #dedent
-function i32(v) {
+function i32(v: number | bigint) {
   let val = BigInt(v);
   const r = [];
 
