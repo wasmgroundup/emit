@@ -1,0 +1,12 @@
+{
+  "scripts": {
+    "check": "tsc --noEmit",
+    "format": "prettier --write ."
+  },
+  "dependencies": {
+    "prettier": "^3.0.3"
+  },
+  "devDependencies": {
+    "typescript": "^5.2.2"
+  }
+}
