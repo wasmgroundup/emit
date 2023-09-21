@@ -5,6 +5,8 @@ const SECTION_ID_CODE = 10;
 
 const TYPE_FUNCTION = 0x60;
 
+type BytecodeFragment = (number | BytecodeFragment)[];
+
 function stringToBytes(s: string): number[] {
   const bytes = new TextEncoder().encode(s);
   return Array.from(bytes);
@@ -37,63 +39,69 @@ enum valtype {
   f64 = 0x7c,
 }
 
-function vec<T>(elements: T[]) {
+function vec<T extends BytecodeFragment>(elements: T): BytecodeFragment {
   return [u32(elements.length), ...elements];
 }
 
-function section(id: number, contents) {
-  const sizeInBytes = contents.flat(Infinity).length;
+function section(id: number, contents: BytecodeFragment) {
+  const sizeInBytes = (contents as any[]).flat(Infinity).length;
   return [id, u32(sizeInBytes), contents];
 }
 
-function functype(paramTypes: valtype[], resultTypes: valtype[]) {
+function functype(
+  paramTypes: valtype[],
+  resultTypes: valtype[],
+): BytecodeFragment {
   return [TYPE_FUNCTION, vec(paramTypes), vec(resultTypes)];
 }
 
-function typesec(functypes) {
+function typesec(functypes: BytecodeFragment): BytecodeFragment {
   return section(SECTION_ID_TYPE, vec(functypes));
 }
 
 const typeidx = u32;
 
-function funcsec(typeidxs) {
+function funcsec(typeidxs: BytecodeFragment): BytecodeFragment {
   return section(SECTION_ID_FUNCTION, vec(typeidxs));
 }
 
-function code(func) {
-  const sizeInBytes = func.flat(Infinity).length;
+function code(func: BytecodeFragment): BytecodeFragment {
+  const sizeInBytes = (func as any[]).flat(Infinity).length;
   return [u32(sizeInBytes), func];
 }
 
-function func(locals, body) {
+function func(
+  locals: BytecodeFragment,
+  body: BytecodeFragment,
+): BytecodeFragment {
   return [vec(locals), body];
 }
 
-function codesec(codes) {
+function codesec(codes: BytecodeFragment): BytecodeFragment {
   return section(SECTION_ID_CODE, vec(codes));
 }
 
-function name(s: string) {
+function name(s: string): BytecodeFragment {
   return vec(stringToBytes(s));
 }
 
-function export_(nm: string, exportdesc) {
+function export_(nm: string, exportdesc: BytecodeFragment): BytecodeFragment {
   return [name(nm), exportdesc];
 }
 
-function exportsec(exports) {
+function exportsec(exports: BytecodeFragment): BytecodeFragment {
   return section(SECTION_ID_EXPORT, vec(exports));
 }
 
 const funcidx = u32;
 
 const exportdesc = {
-  func(idx: number) {
+  func(idx: number): BytecodeFragment {
     return [0x00, funcidx(idx)];
   },
 };
 
-function module(sections) {
+function module(sections): BytecodeFragment {
   return [magic(), version(), sections];
 }
 
@@ -118,7 +126,7 @@ const instr = {
 const SEVEN_BIT_MASK_BIG_INT = 0b01111111n;
 const CONTINUATION_BIT = 0b10000000;
 
-function u32(v: number | bigint) {
+function u32(v: number | bigint): number[] {
   let val = BigInt(v);
   let more = true;
   const r = [];
@@ -137,7 +145,7 @@ function u32(v: number | bigint) {
 }
 
 ///! START i32-v1 #priv #api #dedent
-function i32(v: number | bigint) {
+function i32(v: number | bigint): number[] {
   let val = BigInt(v);
   const r = [];
 
@@ -159,7 +167,7 @@ function i32(v: number | bigint) {
   return r;
 }
 
-function locals(n: number, type: valtype) {
+function locals(n: number, type: valtype): BytecodeFragment {
   return [u32(n), type];
 }
 
