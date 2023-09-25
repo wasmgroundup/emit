@@ -32,11 +32,28 @@ test("simple modules", async () => {
     return instance.exports.main(...args);
   };
 
+  // () => ()
   expect(await runMain(makeModule([], [], [instr.end]), [])).toBe(undefined);
+
+  // () => i32
   expect(
     await runMain(
       makeModule([], [valtype.i32], [instr.i32.const, 1, instr.end]),
       [],
     ),
   ).toBe(1);
+
+  // (i32) => i32
+  expect(
+    await runMain(
+      makeModule([valtype.i32], [valtype.i32], [instr.local.get, 0, instr.end]),
+      [1],
+    ),
+  ).toBe(1);
+  expect(
+    await runMain(
+      makeModule([valtype.i32], [valtype.i32], [instr.local.get, 0, instr.end]),
+      [99],
+    ),
+  ).toBe(99);
 });

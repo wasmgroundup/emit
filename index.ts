@@ -5,7 +5,7 @@ const SECTION_ID_CODE = 10;
 
 const TYPE_FUNCTION = 0x60;
 
-type BytecodeFragment = (number | BytecodeFragment)[];
+export type BytecodeFragment = (number | BytecodeFragment)[];
 
 function stringToBytes(s: string): number[] {
   const bytes = new TextEncoder().encode(s);
@@ -113,13 +113,34 @@ const instr = {
   nop: 0x01,
   end: 0x0b,
 
+  local: {
+    get: 0x20,
+    set: 0x21,
+    tee: 0x22,
+  },
   i32: {
     const: 0x41,
     add: 0x6a,
     sub: 0x6b,
+    mul: 0x6c,
   },
   i64: {
     const: 0x42,
+    add: 0x7c,
+    sub: 0x7d,
+    mul: 0x7e,
+  },
+  f32: {
+    const: 0x43,
+    add: 0x92,
+    sub: 0x93,
+    mul: 0x94,
+  },
+  f64: {
+    const: 0x44,
+    add: 0xa0,
+    sub: 0xa1,
+    mul: 0xa2,
   },
 };
 
