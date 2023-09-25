@@ -1,4 +1,22 @@
 {
+  "name": "@wasmgroundup/emit",
+  "description": "A library for creating binary-encoded WebAssembly modules",
+  "version": "0.1.0",
+  "main": "dist/index.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/wasmgroundup/emit.git"
+  },
+  "keywords": [
+    "wasm",
+    "webassembly"
+  ],
+  "author": "Mariano Guerra & Patrick Dubroy <hello@wasmgroundup.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/wasmgroundup/emit/issues"
+  },
+  "homepage": "https://github.com/wasmgroundup/emit#readme",
   "scripts": {
     "check": "tsc --noEmit",
     "format": "prettier --write ."
