@@ -1,4 +1,5 @@
 const SECTION_ID_TYPE = 1;
+const SECTION_ID_IMPORT = 2;
 const SECTION_ID_FUNCTION = 3;
 const SECTION_ID_EXPORT = 7;
 const SECTION_ID_CODE = 10;
@@ -112,6 +113,7 @@ enum numtype {
 const instr = {
   nop: 0x01,
   end: 0x0b,
+  call: 0x10,
 
   local: {
     get: 0x20,
@@ -142,7 +144,7 @@ const instr = {
     add: 0xa0,
     sub: 0xa1,
     mul: 0xa2,
-    div: 0xa3
+    div: 0xa3,
   },
 };
 
@@ -194,6 +196,27 @@ function locals(n: number, type: valtype): BytecodeFragment {
   return [u32(n), type];
 }
 
+// mod:name  nm:name  d:importdesc
+function import_(
+  mod: string,
+  nm: string,
+  d: BytecodeFragment,
+): BytecodeFragment {
+  return [name(mod), name(nm), d];
+}
+
+// im*:vec(import)
+function importsec(ims: BytecodeFragment): BytecodeFragment {
+  return section(SECTION_ID_IMPORT, vec(ims));
+}
+
+const importdesc = {
+  // x:typeidx
+  func(x: number): BytecodeFragment {
+    return [0x00, funcidx(x)];
+  },
+};
+
 export {
   BytecodeFragment,
   code,
@@ -206,6 +229,9 @@ export {
   funcsec,
   functype,
   i32,
+  import_,
+  importdesc,
+  importsec,
   instr,
   locals,
   module,
