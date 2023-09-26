@@ -7,6 +7,7 @@ import {
   export_,
   exportdesc,
   exportsec,
+  f64,
   func,
   funcidx,
   funcsec,
@@ -86,4 +87,26 @@ test("imports", async () => {
 
   expect(instance.exports.main(1)).toBe(2);
   expect(instance.exports.main(2)).toBe(3);
+});
+
+test("f64", async () => {
+  const PI = 3.141592653589793115997963468544185161590576171875;
+  const makeModule = () => {
+    const mod = module([
+      typesec([functype([], [valtype.f64])]),
+      funcsec([typeidx(0), typeidx(0)]),
+      exportsec([
+        export_("pi", exportdesc.func(0)),
+        export_("nan", exportdesc.func(1)),
+      ]),
+      codesec([
+        code(func([], [instr.f64.const, f64(PI), instr.end])),
+        code(func([], [instr.f64.const, f64(Number.NaN), instr.end])),
+      ]),
+    ]);
+    return Uint8Array.from(mod.flat(Infinity));
+  };
+  const { instance } = await WebAssembly.instantiate(makeModule());
+  expect(instance.exports.pi()).toBe(PI);
+  expect(instance.exports.nan()).toBe(Number.NaN);
 });

@@ -169,7 +169,6 @@ function u32(v: number | bigint): number[] {
   return r;
 }
 
-///! START i32-v1 #priv #api #dedent
 function i32(v: number | bigint): number[] {
   let val = BigInt(v);
   const r = [];
@@ -190,6 +189,12 @@ function i32(v: number | bigint): number[] {
   }
 
   return r;
+}
+
+function f64(v: number): number[] {
+  var buf = new ArrayBuffer(8);
+  new Float64Array(buf)[0] = v;
+  return Array.from(new Uint8Array(buf));
 }
 
 function locals(n: number, type: valtype): BytecodeFragment {
@@ -224,6 +229,7 @@ export {
   export_,
   exportdesc,
   exportsec,
+  f64,
   func,
   funcidx,
   funcsec,
