@@ -41,6 +41,11 @@ enum valtype {
   f64 = 0x7c,
 }
 
+// t: valtype
+function blocktype(t?: valtype): number {
+  return t ?? 0x40;
+}
+
 function vec<T extends BytecodeFragment>(elements: T): BytecodeFragment {
   return [u32(elements.length), ...elements];
 }
@@ -116,6 +121,8 @@ enum numtype {
 
 const instr = {
   nop: 0x01,
+  if: 0x04,
+  else: 0x05,
   end: 0x0b,
   call: 0x10,
 
@@ -254,6 +261,7 @@ function globalsec(globs) {
 }
 
 export {
+  blocktype,
   BytecodeFragment,
   code,
   codesec,

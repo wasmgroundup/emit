@@ -2,6 +2,7 @@ import { expect, test } from "bun:test";
 
 import {
   BytecodeFragment,
+  blocktype,
   code,
   codesec,
   export_,
@@ -174,4 +175,35 @@ test("globals", async () => {
   expect(exports.getVar()).toBe(0);
   exports.incVar();
   expect(exports.getVar()).toBe(1);
+});
+
+test("if", async () => {
+  const makeModule = () => {
+    const mod = module([
+      typesec([functype([valtype.i32], [valtype.f64])]),
+      funcsec([typeidx(0)]),
+      exportsec([export_("maybePi", exportdesc.func(0))]),
+      codesec([
+        code(
+          func(
+            [],
+            // prettier-ignore
+            [
+              instr.local.get, 0,
+              instr.if, blocktype(valtype.f64),
+              instr.f64.const, f64(PI),
+              instr.else,
+              instr.f64.const, f64(0),
+              instr.end,
+              instr.end,
+            ],
+          ),
+        ),
+      ]),
+    ]);
+    return fragmentToUInt8Array(mod);
+  };
+  const { exports } = (await WebAssembly.instantiate(makeModule())).instance;
+  expect(exports.maybePi(1)).toBe(PI);
+  expect(exports.maybePi(0)).toBe(0);
 });
