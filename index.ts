@@ -1,6 +1,7 @@
 const SECTION_ID_TYPE = 1;
 const SECTION_ID_IMPORT = 2;
 const SECTION_ID_FUNCTION = 3;
+const SECTION_ID_GLOBAL = 6;
 const SECTION_ID_EXPORT = 7;
 const SECTION_ID_CODE = 10;
 
@@ -100,6 +101,9 @@ const exportdesc = {
   func(idx: number): BytecodeFragment {
     return [0x00, funcidx(idx)];
   },
+  global(idx: number): BytecodeFragment {
+    return [0x03, globalidx(idx)];
+  },
 };
 
 function module(sections): BytecodeFragment {
@@ -120,6 +124,11 @@ const instr = {
     set: 0x21,
     tee: 0x22,
   },
+  global: {
+    get: 0x23,
+    set: 0x24,
+  },
+
   i32: {
     const: 0x41,
     add: 0x6a,
@@ -222,6 +231,28 @@ const importdesc = {
   },
 };
 
+const globalidx = u32;
+
+const mut = {
+  const: 0x00,
+  var: 0x01,
+};
+
+// t:valtype  m:mut
+function globaltype(t, m) {
+  return [t, m];
+}
+
+// gt:globaltype  e:expr
+function global(gt, e) {
+  return [gt, e];
+}
+
+// glob*:vec(global)
+function globalsec(globs) {
+  return section(SECTION_ID_GLOBAL, vec(globs));
+}
+
 export {
   BytecodeFragment,
   code,
@@ -234,6 +265,9 @@ export {
   funcidx,
   funcsec,
   functype,
+  global,
+  globalsec,
+  globaltype,
   i32,
   import_,
   importdesc,
@@ -241,6 +275,7 @@ export {
   instr,
   locals,
   module,
+  mut,
   name,
   section,
   typeidx,
