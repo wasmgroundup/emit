@@ -288,6 +288,7 @@ export {
   section,
   typeidx,
   typesec,
+  u32,
   valtype,
   vec,
 };
