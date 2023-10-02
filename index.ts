@@ -121,10 +121,18 @@ enum numtype {
 
 const instr = {
   nop: 0x01,
+  block: 0x02,
+  loop: 0x03,
   if: 0x04,
   else: 0x05,
   end: 0x0b,
+  br: 0x0c,
+  br_if: 0x0d,
+  br_table: 0x0e,
+  return: 0x0f,
   call: 0x10,
+  call_indirect: 0x11,
+  drop: 0x1a,
 
   local: {
     get: 0x20,
@@ -134,6 +142,7 @@ const instr = {
   global: {
     get: 0x23,
     set: 0x24,
+    tee: 0x25,
   },
 
   i32: {
@@ -245,7 +254,7 @@ function importsec(ims: BytecodeFragment): BytecodeFragment {
 const importdesc = {
   // x:typeidx
   func(x: number): BytecodeFragment {
-    return [0x00, funcidx(x)];
+    return [0x00, typeidx(x)];
   },
 };
 
