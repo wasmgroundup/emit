@@ -126,10 +126,6 @@ function module(sections): BytecodeFragment {
   return [magic(), version(), sections];
 }
 
-enum numtype {
-  i32 = 0x7f,
-}
-
 const instr = {
   nop: 0x01,
   block: 0x02,
@@ -310,7 +306,7 @@ function globalsec(globs: BytecodeFragment[]) {
   return section(SECTION_ID_GLOBAL, vec(globs));
 }
 
-function tabletype(elemtype: BytecodeFragment, limits: BytecodeFragment) {
+function tabletype(elemtype: number, limits: BytecodeFragment) {
   return [elemtype, limits];
 }
 
@@ -396,6 +392,7 @@ export {
   start,
   startsec,
   table,
+  tableidx,
   tablesec,
   tabletype,
   typeidx,
