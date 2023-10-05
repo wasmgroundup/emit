@@ -1,9 +1,14 @@
 const SECTION_ID_TYPE = 1;
 const SECTION_ID_IMPORT = 2;
 const SECTION_ID_FUNCTION = 3;
+const SECTION_ID_TABLE = 4;
+const SECTION_ID_MEMORY = 5;
 const SECTION_ID_GLOBAL = 6;
 const SECTION_ID_EXPORT = 7;
+const SECTION_ID_START = 8;
+const SECTION_ID_ELEMENT = 9;
 const SECTION_ID_CODE = 10;
+const SECTION_ID_DATA = 11;
 
 const TYPE_FUNCTION = 0x60;
 
@@ -105,6 +110,12 @@ const funcidx = u32;
 const exportdesc = {
   func(idx: number): BytecodeFragment {
     return [0x00, funcidx(idx)];
+  },
+  table(idx: number): BytecodeFragment {
+    return [0x01, tableidx(idx)];
+  },
+  mem(idx: number): BytecodeFragment {
+    return [0x02, memidx(idx)];
   },
   global(idx: number): BytecodeFragment {
     return [0x03, globalidx(idx)];
@@ -258,6 +269,25 @@ const importdesc = {
   },
 };
 
+const memidx = u32;
+
+function mem(memtype) {
+  return memtype;
+}
+
+function memsec(mems: BytecodeFragment[]) {
+  return section(SECTION_ID_MEMORY, vec(mems));
+}
+
+const limits = {
+  min(n: number) {
+    return [0x00, u32(n)];
+  },
+  minmax(n: number, m: number) {
+    return [0x01, u32(n), u32(m)];
+  },
+};
+
 const globalidx = u32;
 
 const mut = {
@@ -276,8 +306,57 @@ function global(gt, e) {
 }
 
 // glob*:vec(global)
-function globalsec(globs) {
+function globalsec(globs: BytecodeFragment[]) {
   return section(SECTION_ID_GLOBAL, vec(globs));
+}
+
+function tabletype(elemtype: BytecodeFragment, limits: BytecodeFragment) {
+  return [elemtype, limits];
+}
+
+function table(tabletype: BytecodeFragment) {
+  return tabletype;
+}
+
+function tablesec(tables: BytecodeFragment[]) {
+  return section(SECTION_ID_TABLE, vec(tables));
+}
+
+const elemtype = { funcref: 0x70 };
+
+const tableidx = u32;
+
+const start = funcidx;
+
+// st:start
+function startsec(st: BytecodeFragment) {
+  return section(SECTION_ID_START, st);
+}
+
+// x:memidx  e:expr  b∗:vec(byte)
+function data(
+  x: BytecodeFragment,
+  e: BytecodeFragment,
+  bs: BytecodeFragment[],
+) {
+  return [x, e, vec(bs)];
+}
+
+function datasec(segs: BytecodeFragment[]) {
+  return section(SECTION_ID_DATA, vec(segs));
+}
+
+// x:tableidx  e:expr  y∗:vec(funcidx)
+function elem(
+  x: BytecodeFragment,
+  e: BytecodeFragment,
+  ys: BytecodeFragment[],
+) {
+  return [x, e, vec(ys)];
+}
+
+function elemsec(segs: BytecodeFragment[]) {
+  return section(SECTION_ID_ELEMENT, vec(segs));
 }
 
 export {
@@ -285,6 +364,11 @@ export {
   BytecodeFragment,
   code,
   codesec,
+  data,
+  datasec,
+  elem,
+  elemsec,
+  elemtype,
   export_,
   exportdesc,
   exportsec,
@@ -301,11 +385,19 @@ export {
   importdesc,
   importsec,
   instr,
+  limits,
   locals,
+  mem,
+  memsec,
   module,
   mut,
   name,
   section,
+  start,
+  startsec,
+  table,
+  tablesec,
+  tabletype,
   typeidx,
   typesec,
   u32,
