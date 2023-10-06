@@ -183,6 +183,8 @@ const instr = {
     div: 0x95,
   },
   f64: {
+    load: 0x2b,
+    store: 0x39,
     const: 0x44,
     add: 0xa0,
     sub: 0xa1,
@@ -279,10 +281,6 @@ const importdesc = {
 
 const memidx = u32;
 
-function mem(memtype: BytecodeFragment) {
-  return memtype;
-}
-
 function memsec(mems: BytecodeFragment[]) {
   return section(SECTION_ID_MEMORY, vec(mems));
 }
@@ -372,6 +370,10 @@ function elemsec(segs: BytecodeFragment[]) {
   return section(SECTION_ID_ELEMENT, vec(segs));
 }
 
+function memarg(align: number, offset: number) {
+  return [u32(align), u32(offset)];
+}
+
 export {
   blocktype,
   BytecodeFragment,
@@ -400,7 +402,7 @@ export {
   instr,
   limits,
   locals,
-  mem,
+  memarg,
   memsec,
   memtype,
   module,
