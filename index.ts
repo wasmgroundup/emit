@@ -260,19 +260,36 @@ function importsec(ims: BytecodeFragment): BytecodeFragment {
 
 const importdesc = {
   // x:typeidx
-  func(x: number): BytecodeFragment {
-    return [0x00, typeidx(x)];
+  func(x: BytecodeFragment): BytecodeFragment {
+    return [0x00, x];
+  },
+  // tt:tabletype
+  table(tt: BytecodeFragment): BytecodeFragment {
+    return [0x01, tt];
+  },
+  // mt:memtype
+  mem(mt: BytecodeFragment): BytecodeFragment {
+    return [0x02, mt];
+  },
+  // gt:globaltype
+  global(gt: BytecodeFragment): BytecodeFragment {
+    return [0x03, gt];
   },
 };
 
 const memidx = u32;
 
-function mem(memtype) {
+function mem(memtype: BytecodeFragment) {
   return memtype;
 }
 
 function memsec(mems: BytecodeFragment[]) {
   return section(SECTION_ID_MEMORY, vec(mems));
+}
+
+// lim:limits
+function memtype(limits: BytecodeFragment) {
+  return limits;
 }
 
 const limits = {
@@ -385,6 +402,7 @@ export {
   locals,
   mem,
   memsec,
+  memtype,
   module,
   mut,
   name,
