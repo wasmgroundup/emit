@@ -151,8 +151,13 @@ const instr = {
     set: 0x24,
     tee: 0x25,
   },
+  memory: {
+    size: 0x3f,
+    grow: 0x40,
+  },
 
   i32: {
+    load: 0x28,
     const: 0x41,
     eqz: 0x45,
     eq: 0x46,
@@ -170,6 +175,7 @@ const instr = {
     mul: 0x6c,
   },
   i64: {
+    store32: 0x3e,
     const: 0x42,
     add: 0x7c,
     sub: 0x7d,
@@ -190,6 +196,7 @@ const instr = {
     sub: 0xa1,
     mul: 0xa2,
     div: 0xa3,
+    reinterpret_i64: 0xbf,
   },
 };
 
