@@ -127,6 +127,7 @@ function module(sections): BytecodeFragment {
 }
 
 const instr = {
+  unreachable: 0x00,
   nop: 0x01,
   block: 0x02,
   loop: 0x03,
@@ -140,6 +141,7 @@ const instr = {
   call: 0x10,
   call_indirect: 0x11,
   drop: 0x1a,
+  select: 0x1b,
 
   local: {
     get: 0x20,
