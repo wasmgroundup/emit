@@ -25,6 +25,7 @@ import {
   mut,
   typeidx,
   typesec,
+  u32,
   valtype,
 } from "./index";
 
@@ -33,6 +34,11 @@ const PI = 3.141592653589793115997963468544185161590576171875;
 function fragmentToUInt8Array(frag: BytecodeFragment): Uint8Array {
   return Uint8Array.from((frag as any).flat(Infinity));
 }
+
+test("u32", () => {
+  expect(u32(32768)).toEqual([128, 128, 2]);
+  expect(u32(2 ** 32 - 1)).toEqual([255, 255, 255, 255, 15]);
+});
 
 test("simple modules", async () => {
   const makeModule = (paramTypes, resultTypes, body) => {
