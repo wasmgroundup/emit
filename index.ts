@@ -179,12 +179,14 @@ const instr = {
   i64: {
     store32: 0x3e,
     const: 0x42,
+    ne: 0x52,
     add: 0x7c,
     sub: 0x7d,
     mul: 0x7e,
   },
   f32: {
     const: 0x43,
+    ne: 0x5c,
     add: 0x92,
     sub: 0x93,
     mul: 0x94,
@@ -194,6 +196,7 @@ const instr = {
     load: 0x2b,
     store: 0x39,
     const: 0x44,
+    ne: 0x62,
     add: 0xa0,
     sub: 0xa1,
     mul: 0xa2,
