@@ -40,6 +40,12 @@ test("u32", () => {
   expect(u32(2 ** 32 - 1)).toEqual([255, 255, 255, 255, 15]);
 });
 
+test("i32", () => {
+  expect(i32(32768)).toEqual([128, 128, 2]);
+  expect(i32(2 ** 31 - 1)).toEqual([255, 255, 255, 255, 7]);
+  expect(i32(-(2 ** 31 - 1))).toEqual([129, 128, 128, 128, 120]);
+});
+
 test("simple modules", async () => {
   const makeModule = (paramTypes, resultTypes, body) => {
     const mod = module([
