@@ -1,14 +1,12 @@
 import { expect, test } from "bun:test";
 
 import {
-  BytecodeFragment,
   blocktype,
   code,
   codesec,
   export_,
   exportdesc,
   exportsec,
-  f64,
   func,
   funcidx,
   funcsec,
@@ -27,11 +25,21 @@ import {
   typesec,
   u32,
   valtype,
-} from "./index";
+} from "./index.js";
+
+function blocktype(t?: valtype): number {
+  return t ?? 0x40;
+}
+
+function f64(v: number): number[] {
+  var buf = new ArrayBuffer(8);
+  new Float64Array(buf)[0] = v;
+  return Array.from(new Uint8Array(buf));
+}
 
 const PI = 3.141592653589793115997963468544185161590576171875;
 
-function fragmentToUInt8Array(frag: BytecodeFragment): Uint8Array {
+function fragmentToUInt8Array(frag): Uint8Array {
   return Uint8Array.from((frag as any).flat(Infinity));
 }
 

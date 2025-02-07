@@ -1,8 +1,0 @@
-{
-  "files": ["index.ts"],
-  "compilerOptions": {
-    "outDir": "dist",
-    "target": "es2020",
-    "declaration": true
-  }
-}

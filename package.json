@@ -1,10 +1,9 @@
 {
   "name": "@wasmgroundup/emit",
   "description": "A library for creating binary-encoded WebAssembly modules",
-  "version": "0.2.18",
+  "version": "0.3.0",
   "type": "module",
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
+  "main": "index.js",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/wasmgroundup/emit.git"
@@ -18,16 +17,5 @@
   "bugs": {
     "url": "https://github.com/wasmgroundup/emit/issues"
   },
-  "homepage": "https://github.com/wasmgroundup/emit#readme",
-  "scripts": {
-    "check": "tsc --noEmit",
-    "format": "prettier --write .",
-    "prepublishOnly": "tsc"
-  },
-  "dependencies": {
-    "prettier": "^3.0.3"
-  },
-  "devDependencies": {
-    "typescript": "^5.2.2"
-  }
+  "homepage": "https://github.com/wasmgroundup/emit#readme"
 }
