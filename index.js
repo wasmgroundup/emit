@@ -155,7 +155,7 @@ export function locals(n, type) {
   return [u32(n), type];
 }
 
-export const localidx = u32;
+export const localidx = (x) => u32(x);
 
 instr.drop = 0x1a;
 instr.call = 0x10;
@@ -249,7 +249,7 @@ export function int32ToBytes(v) {
   return [v & 0xff, (v >> 8) & 0xff, (v >> 16) & 0xff, (v >> 24) & 0xff];
 }
 
-instr.i32.unreachable = 0x00;
+instr.unreachable = 0x00;
 
 export const SECTION_ID_DATA = 11;
 
@@ -261,9 +261,65 @@ export function data(x, e, bs) {
 export function datasec(segs) {
   return section(SECTION_ID_DATA, vec(segs));
 }
+export const SECTION_ID_CUSTOM = 0;
+
+export function custom(name, bytes) {
+  return [name, bytes];
+}
+
+export function customsec(custom) {
+  return section(SECTION_ID_CUSTOM, custom);
+}
+
+export function namesec(namedata) {
+  return customsec(custom(name('name'), namedata));
+}
+
+// n:name
+export function namedata(modulenamesubsec, funcnamesubsec, localnamesubsec) {
+  return [modulenamesubsec, funcnamesubsec, localnamesubsec];
+}
+
+export const CUSTOM_NAME_SUB_SEC_MODULE = 0;
+export function modulenamesubsec(n) {
+  return namesubsection(CUSTOM_NAME_SUB_SEC_MODULE, name(n));
+}
+
+export const CUSTOM_NAME_SUB_SEC_FUNC = 1;
+export function funcnamesubsec(namemap) {
+  return namesubsection(CUSTOM_NAME_SUB_SEC_FUNC, namemap);
+}
+
+// N:byte
+export function namesubsection(N, B) {
+  const flatB = B.flat(Infinity);
+  const size = u32(flatB.length);
+  return [N, size, flatB];
+}
+
+export function namemap(nameassocs) {
+  return vec(nameassocs);
+}
+
+export function nameassoc(idx, n) {
+  return [idx, name(n)];
+}
+
+export const CUSTOM_NAME_SUB_SEC_LOCAL = 2;
+export function localnamesubsec(indirectnamemap) {
+  return namesubsection(CUSTOM_NAME_SUB_SEC_LOCAL, indirectnamemap);
+}
+
+export function indirectnamemap(indirectnameassocs) {
+  return vec(indirectnameassocs);
+}
+
+export function indirectnameassoc(idx, namemap) {
+  return [idx, namemap];
+}
 export const SECTION_ID_START = 8;
 
-export const start = funcidx;
+export const start = (x) => funcidx(x);
 
 // st:start
 export function startsec(st) {
@@ -274,9 +330,7 @@ instr.global = {};
 instr.global.get = 0x23;
 instr.global.set = 0x24;
 
-export const globalidx = u32;
-
-exportdesc.global = (idx) => [0x03, globalidx(idx)];
+export const globalidx = (x) => u32(x);
 
 export const SECTION_ID_GLOBAL = 6;
 
@@ -302,25 +356,25 @@ export function globalsec(globs) {
 
 export const SECTION_ID_TABLE = 4;
 
-export function tabletype(elemtype, limits) {
-  return [elemtype, limits];
+export const elemtype = {funcref: 0x70};
+
+// et:elemtype  lim:limits
+export function tabletype(et, lim) {
+  return [et, lim];
 }
 
-export function table(tabletype) {
-  return tabletype;
+// tt:tabletype
+export function table(tt) {
+  return tt;
 }
 
 export function tablesec(tables) {
   return section(SECTION_ID_TABLE, vec(tables));
 }
 
-export const elemtype = {funcref: 0x70};
+export const tableidx = (x) => u32(x);
 
-export const tableidx = u32;
-
-exportdesc.table = (idx) => [0x01, tableidx(idx)];
-
-instr.call_indirect = 0x11;
+instr.call_indirect = 0x11; // [i32] -> []
 
 export const SECTION_ID_ELEMENT = 9;
 
