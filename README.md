@@ -1,7 +1,8 @@
 # emit
 
-A JavaScript library to emit WebAssembly 1.0 binary modules from
-[WebAssembly from the Ground Up](https://wasmgroundup.com/)
+_(From the book [WebAssembly from the Ground Up](https://wasmgroundup.com) — learn Wasm by building a simple compiler in JavaScript.)_
+
+A JavaScript library to emit WebAssembly 1.0 binary modules.
 
 ## Installation
 
