@@ -16,6 +16,7 @@ export function version() {
 
 export const CONTINUATION_BIT = 0b10000000;
 export const SEVEN_BIT_MASK_BIG_INT = 0b01111111n;
+
 export function leb128(v) {
   let val = BigInt(v);
   let more = true;
@@ -37,6 +38,7 @@ export function leb128(v) {
 
 export const MIN_U32 = 0;
 export const MAX_U32 = 2 ** 32 - 1;
+
 export function u32(v) {
   if (v < MIN_U32 || v > MAX_U32) {
     throw Error(`Value out of range for u32: ${v}`);
@@ -70,6 +72,7 @@ export function sleb128(v) {
 export const MIN_I32 = -(2 ** 32 / 2);
 export const MAX_I32 = 2 ** 32 / 2 - 1;
 export const I32_NEG_OFFSET = 2 ** 32;
+
 export function i32(v) {
   if (v < MIN_I32 || v > MAX_U32) {
     throw Error(`Value out of range for i32: ${v}`);
@@ -407,11 +410,6 @@ export function elem(x, e, ys) {
 
 export function elemsec(segs) {
   return section(SECTION_ID_ELEMENT, vec(segs));
-}
-export function assert(cond, msg) {
-  if (!cond) {
-    throw new Error(msg);
-  }
 }
 
 instr.local ??= {};
