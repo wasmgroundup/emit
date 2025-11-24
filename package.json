@@ -17,5 +17,15 @@
   "bugs": {
     "url": "https://github.com/wasmgroundup/emit/issues"
   },
-  "homepage": "https://github.com/wasmgroundup/emit#readme"
+  "homepage": "https://github.com/wasmgroundup/emit#readme",
+  "devDependencies": {
+    "@types/node": "^24.10.1",
+    "typescript": "^5.9.3"
+  },
+  "scripts": {
+    "build": "tsc",
+    "prepublishOnly": "npm run build",
+    "test": "node --test",
+    "test:watch": "node --test --watch"
+  }
 }
