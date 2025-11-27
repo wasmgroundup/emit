@@ -7,7 +7,7 @@ export function stringToBytes(s) {
 
 export function magic() {
   // [0x00, 0x61, 0x73, 0x6d]
-  return stringToBytes("\0asm");
+  return stringToBytes('\0asm');
 }
 
 export function version() {
@@ -167,10 +167,10 @@ export const valtype = {
   f64: 0x7c,
 };
 
-instr.i32 = { const: 0x41 };
-instr.i64 = { const: 0x42 };
-instr.f32 = { const: 0x43 };
-instr.f64 = { const: 0x44 };
+instr.i32 = {const: 0x41};
+instr.i64 = {const: 0x42};
+instr.f32 = {const: 0x43};
+instr.f64 = {const: 0x44};
 instr.i32.add = 0x6a;
 instr.i32.sub = 0x6b;
 instr.i32.mul = 0x6c;
@@ -191,7 +191,7 @@ instr.call = 0x10;
 instr.if = 0x04;
 instr.else = 0x05;
 
-export const blocktype = { empty: 0x40, ...valtype };
+export const blocktype = {empty: 0x40, ...valtype};
 
 instr.i32.eq = 0x46; // a == b
 instr.i32.ne = 0x47; // a != b
@@ -301,7 +301,7 @@ export function customsec(custom) {
 }
 
 export function namesec(namedata) {
-  return customsec(custom(name("name"), namedata));
+  return customsec(custom(name('name'), namedata));
 }
 
 // n:name
@@ -385,7 +385,7 @@ export function globalsec(globs) {
 
 export const SECTION_ID_TABLE = 4;
 
-export const elemtype = { funcref: 0x70 };
+export const elemtype = {funcref: 0x70};
 
 // et:elemtype  lim:limits
 export function tabletype(et, lim) {

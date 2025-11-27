@@ -1,20 +1,20 @@
-import { test } from "node:test";
-import * as assert from "node:assert/strict";
+import {test} from 'node:test';
+import * as assert from 'node:assert/strict';
 
-import * as w from "./index.js";
+import * as w from './index.js';
 
-test("final chapter 1 module", () => {
+test('final chapter 1 module', () => {
   const mod = w.module([
     w.typesec([w.functype([w.valtype.i32], [])]),
     w.funcsec([w.typeidx(0)]),
-    w.exportsec([w.export_("main", w.exportdesc.func(w.funcidx(0)))]),
+    w.exportsec([w.export_('main', w.exportdesc.func(w.funcidx(0)))]),
     w.codesec([w.code(w.func([], [w.instr.end]))]),
   ]);
   const bytes = Uint8Array.from((mod as any).flat(Infinity));
   assert.ok(WebAssembly.validate(bytes));
 });
 
-test("final chapter 1 module - errors", () => {
+test('final chapter 1 module - errors', () => {
   // @ts-expect-error: Passing a number instead of a typeidx.
   w.funcsec([0]);
 
