@@ -17,8 +17,8 @@ export type SectionId =
   | typeof SECTION_ID_CODE
   | typeof SECTION_ID_DATA;
 
-const brand: unique symbol;
-type Brand<T, B extends string> = T & {[brand]: B};
+declare const brand: unique symbol;
+type Brand<T, B extends string> = T & {readonly [brand]: B};
 
 export type typeidx = Brand<Bytes, 'typeidx'>;
 export type funcidx = Brand<Bytes, 'funcidx'>;
