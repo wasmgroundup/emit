@@ -92,7 +92,7 @@ export function code(func: Fragment): Fragment;
 
 export function func(locals: readonly Fragment[], body: Fragment): Fragment;
 
-export function expr(instrs: readonly Fragment[]): Fragment;
+export function expr(instrs: Fragment): Fragment;
 
 export function codesec(codes: readonly Fragment[]): Fragment;
 

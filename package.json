@@ -41,6 +41,7 @@
     "format": "npx prettier '**/*.{ts,js,json}' --write",
     "prepublishOnly": "npm run build && npm run lint",
     "lint": "publint && attw --pack . --ignore-rules cjs-resolves-to-esm",
+    "pretest": "node scripts/extract-readme-example.js",
     "test": "node --test",
     "test:watch": "node --test --watch"
   }
