@@ -292,6 +292,8 @@ export const instr: {
 
 export const blocktype: {readonly empty: 0x40} & typeof valtype;
 
+export type blocktype = typeof blocktype.empty | valtype | Fragment;
+
 // Export section
 // --------------
 
