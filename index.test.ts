@@ -10,7 +10,7 @@ test('final chapter 1 module', () => {
     w.exportsec([w.export_('main', w.exportdesc.func(w.funcidx(0)))]),
     w.codesec([w.code(w.func([], [w.instr.end]))]),
   ]);
-  const bytes = Uint8Array.from((mod as any).flat(Infinity));
+  const bytes = w.flatten(mod);
   assert.ok(WebAssembly.validate(bytes));
 });
 
@@ -31,7 +31,7 @@ test('multi-byte indices (>= 128)', () => {
     w.exportsec([w.export_('last', w.exportdesc.func(lastIdx))]),
     w.codesec(codes),
   ]);
-  const bytes = Uint8Array.from((mod as any).flat(Infinity));
+  const bytes = w.flatten(mod);
   assert.ok(WebAssembly.validate(bytes));
 });
 
@@ -44,7 +44,7 @@ test('importdesc.func with multi-byte index', () => {
     w.typesec(functypes),
     w.importsec([w.import_('env', 'fn', w.importdesc.func(lastTypeIdx))]),
   ]);
-  const bytes = Uint8Array.from((mod as any).flat(Infinity));
+  const bytes = w.flatten(mod);
   assert.ok(WebAssembly.validate(bytes));
 });
 

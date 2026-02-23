@@ -317,6 +317,8 @@ export type WasmModule = Fragment;
 
 export function module(sections: readonly Fragment[]): WasmModule;
 
+export function flatten(fragment: Fragment): Uint8Array;
+
 // Locals
 // ------
 

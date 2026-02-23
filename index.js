@@ -1,5 +1,26 @@
 // WebAssembly 1.0 Module Builder
 // https://wasmgroundup.com/
+
+function byteLength(fragment) {
+  let n = 0;
+  for (const item of fragment) {
+    if (Array.isArray(item)) n += byteLength(item);
+    else n += 1;
+  }
+  return n;
+}
+
+function writeInto(fragment, out, offset) {
+  for (const item of fragment) {
+    if (Array.isArray(item)) {
+      offset = writeInto(item, out, offset);
+    } else {
+      out[offset++] = item;
+    }
+  }
+  return offset;
+}
+
 export function stringToBytes(s) {
   const bytes = new TextEncoder().encode(s);
   return Array.from(bytes);
@@ -86,7 +107,7 @@ export function i32(v) {
 }
 
 export function section(id, contents) {
-  const sizeInBytes = contents.flat(Infinity).length;
+  const sizeInBytes = byteLength(contents);
   return [id, u32(sizeInBytes), contents];
 }
 
@@ -115,7 +136,7 @@ export function funcsec(typeidxs) {
 export const SECTION_ID_CODE = 10;
 
 export function code(func) {
-  const sizeInBytes = func.flat(Infinity).length;
+  const sizeInBytes = byteLength(func);
   return [u32(sizeInBytes), func];
 }
 
@@ -159,6 +180,12 @@ export const exportdesc = {
 
 export function module(sections) {
   return [magic(), version(), sections];
+}
+
+export function flatten(fragment) {
+  const out = new Uint8Array(byteLength(fragment));
+  writeInto(fragment, out, 0);
+  return out;
 }
 export const valtype = {
   i32: 0x7f,
@@ -321,9 +348,8 @@ export function funcnamesubsec(namemap) {
 
 // N:byte
 export function namesubsection(N, B) {
-  const flatB = B.flat(Infinity);
-  const size = u32(flatB.length);
-  return [N, size, flatB];
+  const size = u32(byteLength(B));
+  return [N, size, B];
 }
 
 export function namemap(nameassocs) {
