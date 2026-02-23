@@ -153,7 +153,7 @@ export const funcidx = (x) => u32(x);
 
 export const exportdesc = {
   func(idx) {
-    return [0x00, funcidx(idx)];
+    return [0x00, idx];
   },
 };
 
@@ -230,7 +230,7 @@ export function importsec(ims) {
 export const importdesc = {
   // x:typeidx
   func(x) {
-    return [0x00, typeidx(x)];
+    return [0x00, x];
   },
 };
 export const SECTION_ID_MEMORY = 5;
@@ -260,7 +260,7 @@ export const limits = {
 
 export const memidx = u32;
 
-exportdesc.mem = (idx) => [0x02, memidx(idx)];
+exportdesc.mem = (idx) => [0x02, idx];
 
 instr.memory = {
   size: 0x3f, // [] -> [i32]
