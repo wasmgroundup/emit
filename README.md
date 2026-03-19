@@ -10,7 +10,7 @@ A JavaScript library to emit WebAssembly 1.0 binary modules.
 npm i @wasmgroundup/emit
 ```
 
-## Example
+## Examples
 
 Build a WebAssembly module with an exported `add` function:
 
@@ -26,8 +26,8 @@ const mod = w.module([
       w.func(
         [],
         w.expr([
-          [w.instr.local.get, ...w.i32(0)],
-          [w.instr.local.get, ...w.i32(1)],
+          [w.instr.local.get, w.i32(0)],
+          [w.instr.local.get, w.i32(1)],
           w.instr.i32.add,
         ]),
       ),
@@ -38,6 +38,40 @@ const mod = w.module([
 const { instance } = await WebAssembly.instantiate(w.flatten(mod));
 const { add } = instance.exports as { add: (a: number, b: number) => number };
 console.log(add(1, 2)); // 3
+```
+
+### Multiple types
+
+Declare multiple function types (e.g., for an `add` function and a `log` callback):
+
+```typescript
+w.typesec([
+  w.functype([w.valtype.i32, w.valtype.i32], [w.valtype.i32]), // type 0: (i32, i32) -> i32
+  w.functype([w.valtype.i32], []),                              // type 1: (i32) -> void
+])
+```
+
+### Imports
+
+Import a function from the host environment (goes after `typesec` in the module):
+
+```typescript
+w.importsec([
+  w.import_("env", "log", w.importdesc.func(w.typeidx(1))),
+])
+```
+
+### Globals
+
+Define a mutable global initialized to 0 (goes after `funcsec` in the module):
+
+```typescript
+w.globalsec([
+  w.global(
+    w.globaltype(w.valtype.i32, w.mut.var),
+    w.expr([[w.instr.i32.const, w.i32(0)]]),
+  ),
+])
 ```
 
 ## Features
